@@ -1,5 +1,4 @@
 /*#include <D3D11.h>
-
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -13,20 +12,28 @@ int main(int argc, char **argv)
 
 //#define WIN32_LEAN_AND_MEAN				//Exclude rarely used stuff from Windows header
 #include <Windows.h>
+#include <memory>
+#include "BlankDemo.h"
 
-//C RunTime Header Files
-//#include <stdlib.h>
-//#include <malloc.h>
-//#include <memory.h>
-//#include <tchar.h>
-
-
-
-//Temp Stub Not used, stored for later implementation
-/*LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	return DefWindowProc(hwnd, message, wparam, lparam);
-}*/
+	PAINTSTRUCT paintStruct;
+	HDC hDC;
+
+	switch(message)
+	{
+	case WM_PAINT:
+		hDC=BeginPaint(hwnd, &paintStruct);
+		EndPaint(hwnd, &paintStruct);
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+	return 0;
+}
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow)
@@ -40,17 +47,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 	WNDCLASSEX wndClass = {0};
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
-	wndClass.lpfnWndProc = DefWindowProc;
+	wndClass.lpfnWndProc = WndProc;
 	wndClass.hInstance = hInstance;
 	//wndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ERROR));
-	
 	wndClass.hCursor = LoadCursor(NULL,IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName="GameWindowClass";
 
 	if(!RegisterClassEx(&wndClass))
-		return -100;
+		return -1;
 
 	RECT rc = {0,0,640,480};
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
@@ -59,12 +65,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 
 	
 	if(!hwnd)
-		return -200;
+		return -2;
 
 	ShowWindow(hwnd, cmdShow);
+	
+	std::auto_ptr<Dx11Base> demo(new BlankDemo());
 
 	//===== Game Initialize =====
-	
+	bool result = demo->Initialize(hInstance,hwnd);
+
+	if(result == false)
+		return -3;
+
 	MSG msg = {0};
 
 	while(msg.message != WM_QUIT)
@@ -76,14 +88,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 		}
 		else
 		{
-			//Update / Draw here
+			demo->Update(0.0f);
+			demo->Render();
 		}
 	}
 	
 	//===== Game Shutdown =====
-
+	demo->Shutdown();
 	
-
-	//return static_cast<int>(msg.wParam);
-	return 0;
+	return static_cast<int>(msg.wParam);
 }
