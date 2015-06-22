@@ -21,10 +21,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlankDemo.cpp">
+    <ClCompile Include="Dx11Base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dx11Base.cpp">
+    <ClCompile Include="TriangleDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,8 +32,13 @@
     <ClInclude Include="Dx11Base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlankDemo.h">
+    <ClInclude Include="TriangleDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="SolidGreenColor.fx">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

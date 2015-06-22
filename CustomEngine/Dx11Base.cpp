@@ -1,4 +1,5 @@
 #include "Dx11Base.h"
+#include <D3Dcompiler.h>
 
 Dx11Base::Dx11Base() : driverType_(D3D_DRIVER_TYPE_NULL), featureLevel_(D3D_FEATURE_LEVEL_11_0), d3dDevice_(0), d3dContext_(0),swapChain_(0), backBufferTarget_(0)
 {
@@ -9,6 +10,33 @@ Dx11Base::~Dx11Base()
 {
 	Shutdown();
 }
+
+//Compile Shader function
+bool Dx11Base::CompileD3DShader(char* filePath, char* entry, char* shaderModel, ID3DBlob** buffer)
+{
+	DWORD shaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	shaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob* errorBuffer = 0;
+	HRESULT result;
+
+	result = D3DX11CompileFromFile(filePath, 0, 0, entry, shaderModel, shaderFlags, 0, 0, buffer, &errorBuffer, 0);
+	if(FAILED(result))
+	{
+		if(errorBuffer != 0)
+		{
+			OutputDebugString( (char*) errorBuffer->GetBufferPointer() );
+			errorBuffer->Release();
+		}
+		return false;
+	}
+	if(errorBuffer != 0)
+		errorBuffer->Release();
+	return true;
+}
+
 
 bool Dx11Base::LoadContent()
 {
@@ -29,10 +57,11 @@ void Dx11Base::Shutdown()
 	if(swapChain_) swapChain_->Release();
 	if(d3dContext_) d3dContext_->Release();
 	if(d3dDevice_) d3dDevice_->Release();
-	d3dDevice_ = 0;
-	d3dContext_ = 0;
-	swapChain_ = 0;
+	
 	backBufferTarget_ = 0;
+	d3dContext_ = 0;
+	d3dDevice_ = 0;
+	swapChain_ = 0;
 }
 
 bool Dx11Base::Initialize(HINSTANCE hInstance, HWND hwnd)

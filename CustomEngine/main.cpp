@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 //#define WIN32_LEAN_AND_MEAN				//Exclude rarely used stuff from Windows header
 #include <Windows.h>
 #include <memory>
-#include "BlankDemo.h"
+#include "TriangleDemo.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -69,7 +69,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine,
 
 	ShowWindow(hwnd, cmdShow);
 	
-	std::auto_ptr<Dx11Base> demo(new BlankDemo());
+	std::auto_ptr<Dx11Base> demo(new TriangleDemo());
 
 	//===== Game Initialize =====
 	bool result = demo->Initialize(hInstance,hwnd);
