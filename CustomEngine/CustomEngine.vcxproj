@@ -72,14 +72,16 @@
   <ItemGroup>
     <ClCompile Include="Dx11Base.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TriangleDemo.cpp" />
+    <ClCompile Include="TextureDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dx11Base.h" />
-    <ClInclude Include="TriangleDemo.h" />
+    <ClInclude Include="TextureDemo.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SolidGreenColor.fx">
+    <FxCompile Include="Texture.fx">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalIncludeDirectories>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
